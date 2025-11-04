@@ -1,0 +1,575 @@
+{
+  "name": "google-places-scraper-loop-demo.json",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e09b6f92-ab85-4343-9c13-87fd4e590b8f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key"
+            },
+            {
+              "name": "type"
+            },
+            {
+              "name": "query",
+              "value": "=restaurant {{ $('Get row(s) in sheet').item.json.Ville }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        -192
+      ],
+      "id": "49eb473c-0450-44c3-988c-643570c0d402",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// vérifie que le premier item contient bien results\nif (!items[0].json.results) {\n  return [];\n}\n\n// récupère le tableau de restaurants\nconst restaurants = items[0].json.results;\n\n// retourne chaque restaurant comme un item séparé\nreturn restaurants.map(r => {\n  return { json: r };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        -192
+      ],
+      "id": "88549a2f-bee4-4753-8214-870f2efccae7",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1CwPJnx94ip6FSBKqNr4wVB5_e-hrhJua0_fTX8DT7qI",
+          "mode": "list",
+          "cachedResultName": "Optim Review - Prospection",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CwPJnx94ip6FSBKqNr4wVB5_e-hrhJua0_fTX8DT7qI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 134049372,
+          "mode": "list",
+          "cachedResultName": "Prospects_Bruts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CwPJnx94ip6FSBKqNr4wVB5_e-hrhJua0_fTX8DT7qI/edit#gid=134049372"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nom_Etablissement": "={{ $json.name }}",
+            "Adresse": "={{ $json.formatted_address }}",
+            "Note_Google": "={{ $json.rating }}",
+            "Nombre_Avis": "={{ $json.user_ratings_total }}",
+            "Telephone": "={{ $json.formatted_phone_number || \"\" }}",
+            "Ville_Source": "={{ $('Get row(s) in sheet').first().json.Ville }}\n"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nom_Etablissement",
+              "displayName": "Nom_Etablissement",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Adresse",
+              "displayName": "Adresse",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Telephone",
+              "displayName": "Telephone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Note_Google",
+              "displayName": "Note_Google",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Nombre_Avis",
+              "displayName": "Nombre_Avis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ville_Source",
+              "displayName": "Ville_Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Statut_Prospection",
+              "displayName": "Statut_Prospection",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email_Contact",
+              "displayName": "Email_Contact",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phrase_Accroche",
+              "displayName": "Phrase_Accroche",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact_Reseaux",
+              "displayName": "Contact_Reseaux",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1760,
+        0
+      ],
+      "id": "eac56912-8fed-4ac1-ad1d-cfe86c48057e",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "I0VyBZIUEPxiBEmY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key"
+            },
+            {
+              "name": "pagetoken",
+              "value": "={{ $('HTTP Request').item.json[\"next_page_token\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        864,
+        0
+      ],
+      "id": "baac10f1-6c6b-4e85-b2bd-9a325afd68d3",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// vérifie que le premier item contient bien results\nif (!items[0].json.results) {\n  return [];\n}\n\n// récupère le tableau de restaurants\nconst restaurants = items[0].json.results;\n\n// retourne chaque restaurant comme un item séparé\nreturn restaurants.map(r => {\n  return { json: r };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        0
+      ],
+      "id": "011a80be-6d70-4c15-a627-245a3eb72911",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1456,
+        -16
+      ],
+      "id": "18a0371b-30bc-480c-8073-0de143f46601",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "27635239-8eaa-44cd-82b8-ddcbff63665e",
+              "leftValue": "={{ $json.next_page_token }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        16
+      ],
+      "id": "e59cdb25-106a-42a4-8353-46bb0a21a3c6",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        0
+      ],
+      "id": "b761c81b-1ac0-4fd7-8ac5-086a86d62d5a",
+      "name": "Wait",
+      "webhookId": "4041dc2d-6f70-4ba3-9e45-d25117fd67b2"
+    },
+    {
+      "parameters": {
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key"
+            },
+            {
+              "name": "pagetoken",
+              "value": "={{ $('HTTP Request1').item.json[\"next_page_token\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        864,
+        192
+      ],
+      "id": "a218943e-d247-499e-8fa6-962a933d8b48",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// vérifie que le premier item contient bien results\nif (!items[0].json.results) {\n  return [];\n}\n\n// récupère le tableau de restaurants\nconst restaurants = items[0].json.results;\n\n// retourne chaque restaurant comme un item séparé\nreturn restaurants.map(r => {\n  return { json: r };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        192
+      ],
+      "id": "2c1b4321-fe43-4bf9-8f12-9c1491234626",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "27635239-8eaa-44cd-82b8-ddcbff63665e",
+              "leftValue": "={{ $json.next_page_token }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        208
+      ],
+      "id": "7a6086b3-1245-4cc4-be14-cf4fd7e66eb0",
+      "name": "If1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        192
+      ],
+      "id": "48d8dd31-040d-498a-a20f-00e7b827fdad",
+      "name": "Wait1",
+      "webhookId": "60499b9d-49bc-4efb-bd2b-9ab3feb95639"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ec030e92-b2f9-441f-b35d-cf4cd8e5a2ee",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "I0VyBZIUEPxiBEmY",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9db1e89a-adb9-4b4a-86eb-d909fb514107",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "146181d64dfb8d9ddd55206a04b49eacc048fda987396f1b7260fab3e9562025"
+  },
+  "id": "72nOmONuYuOlzNoN",
+  "tags": []
+}
